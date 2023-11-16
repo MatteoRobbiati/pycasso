@@ -1,7 +1,6 @@
+![pycasso](https://github.com/MatteoRobbiati/pycasso/assets/62071516/5e0a7459-692f-4e2d-9a9b-fcf881e3399a)
 
-![pycasso_logo](https://github.com/MatteoRobbiati/pycasso/assets/62071516/f5cf72dc-0ace-47e8-a19a-f16f51471b9e)
-
-Pycasso is an automatic image processing tool based on the [pillow](https://github.com/python-pillow/Pillow) package.
+Automatic image processing tool based on the [pillow](https://github.com/python-pillow/Pillow) package.
 
 I was tired to use graphical apps to remove backgrounds and replace colors, and 
 now I am happy to have `pycasso` helping me.
