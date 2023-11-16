@@ -1,3 +1,6 @@
+
+![pycasso_logo](https://github.com/MatteoRobbiati/pycasso/assets/62071516/f5cf72dc-0ace-47e8-a19a-f16f51471b9e)
+
 # pycasso
 Pycasso is an automatic image processing tool based on the [pillow](https://github.com/python-pillow/Pillow) package.
 
