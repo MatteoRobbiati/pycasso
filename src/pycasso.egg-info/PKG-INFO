@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: pycasso
+Version: 0.0.1
+Summary: Image processing with pillow
+Author: Matteo Robbiati
+Keywords: setup,distutils
+License-File: LICENSE
+Requires-Dist: pillow>=10.0.0

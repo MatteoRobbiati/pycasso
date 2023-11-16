@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+src/pycasso.egg-info/PKG-INFO
+src/pycasso.egg-info/SOURCES.txt
+src/pycasso.egg-info/dependency_links.txt
+src/pycasso.egg-info/not-zip-safe
+src/pycasso.egg-info/requires.txt
+src/pycasso.egg-info/top_level.txt
