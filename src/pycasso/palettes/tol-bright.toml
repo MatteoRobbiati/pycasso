@@ -1,0 +1,12 @@
+name = "tol-bright"
+description = "Paul Tol's bright qualitative scheme. Colourblind-safe, high contrast on white, good for line plots with few series."
+
+colors = [
+    "#4477AA",  # blue
+    "#EE6677",  # red
+    "#228833",  # green
+    "#CCBB44",  # yellow
+    "#66CCEE",  # cyan
+    "#AA3377",  # purple
+    "#BBBBBB",  # grey
+]

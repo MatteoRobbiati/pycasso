@@ -7,11 +7,24 @@ now I am happy to have `pycasso` helping me.
 
 ## Install it
 
-In order to install `pycasso`, just open your terminal, clone this repo and use the 
-`pip` installation command:
+`pycasso` is managed with [uv](https://docs.astral.sh/uv/). Clone this repo and let
+`uv` set up the environment for you:
 
 ```sh
-pip install .
+uv sync
+```
+
+This creates a `.venv` with `pycasso` installed in editable mode. Run anything
+inside it with `uv run`, for example:
+
+```sh
+cd examples && uv run python chalmers_white.py
+```
+
+To add `pycasso` to an environment of your own instead:
+
+```sh
+uv pip install .
 ```
 You can know use it as you wish.
 

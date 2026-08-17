@@ -1,0 +1,13 @@
+name = "green-orange"
+description = "Diagnostic palette: only green and orange shades, nothing else. Useful for confirming a recolour actually changed something, since the result can't be mistaken for the original by accident."
+
+colors = [
+    "#1B5E20",  # dark green
+    "#388E3C",
+    "#66BB6A",
+    "#A5D6A7",  # light green
+    "#E65100",  # dark orange
+    "#F57C00",
+    "#FFA726",
+    "#FFCC80",  # light orange
+]

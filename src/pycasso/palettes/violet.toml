@@ -1,0 +1,11 @@
+name = "violet"
+description = "Diagnostic palette: a single hue family (violet) at various lightnesses, nothing else. If a recolour still comes out blue/red-looking against this palette, something is wrong -- there is no blue or red anywhere in it to fall back on."
+
+colors = [
+    "#4A148C",  # dark violet
+    "#6A1B9A",
+    "#8E24AA",
+    "#AB47BC",
+    "#CE93D8",
+    "#F3E5F5",  # near-white violet
+]

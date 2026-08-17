@@ -1,0 +1,15 @@
+name = "tol-muted"
+description = "Paul Tol's muted qualitative scheme. Colourblind-safe and low-saturation, so it survives print and stays readable behind dense data."
+
+colors = [
+    "#CC6677",  # rose
+    "#332288",  # indigo
+    "#DDCC77",  # sand
+    "#117733",  # green
+    "#88CCEE",  # cyan
+    "#882255",  # wine
+    "#44AA99",  # teal
+    "#999933",  # olive
+    "#AA4499",  # purple
+    "#DDDDDD",  # pale grey
+]

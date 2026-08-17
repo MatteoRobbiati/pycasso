@@ -1,0 +1,11 @@
+name = "grayscale"
+description = "Luminance-separated greys for black-and-white print. Steps are spaced in L* rather than in RGB, so the series stay distinguishable after a journal prints them without colour."
+
+colors = [
+    "#000000",
+    "#3B3B3B",
+    "#6E6E6E",
+    "#9C9C9C",
+    "#C4C4C4",
+    "#E6E6E6",
+]
