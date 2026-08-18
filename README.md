@@ -103,10 +103,10 @@ painter.save("logo_restyled.png")
 ```
 
 <table>
-<tr><th>before</th><th>okabe-ito</th><th>green-orange</th></tr>
+<tr><th>before</th><th>violet</th><th>green-orange</th></tr>
 <tr>
 <td><img src="docs/public/jolly.png" width="160" alt="a jolly roger flag in its original yellow and red"></td>
-<td><img src="docs/public/jolly_okabe-ito.png" width="160" alt="the same flag restyled with the okabe-ito palette"></td>
+<td><img src="docs/public/jolly_violet.png" width="160" alt="the same flag restyled with the violet palette"></td>
 <td><img src="docs/public/jolly_green-orange.png" width="160" alt="the same flag restyled with the green-orange palette"></td>
 </tr>
 </table>

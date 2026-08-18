@@ -40,10 +40,10 @@ icon.save("images/matexxe-icon-512-transparent.png")
 # no need to know the exact colours up front. See matexxe.available() for
 # the built-in palettes.
 jolly = matexxe.Painter("images/jolly.png")
-palette = matexxe.Palette.load("okabe-ito")
+palette = matexxe.Palette.load("violet")
 fitted = matexxe.fit(jolly, palette)
 jolly.restyle(fitted, mode="hue")
-jolly.save("images/jolly_okabe-ito.png")
+jolly.save("images/jolly_violet.png")
 
 # --- 5. Same image, a different palette -------------------------------------
 # Nothing about the call changes, only the palette. green-orange is a
@@ -58,4 +58,4 @@ jolly.save("images/jolly_green-orange.png")
 
 print("wrote images/chalmers_white.png, images/matexxe-icon-512-recolored.png, "
       "images/matexxe-icon-512-transparent.png, "
-      "images/jolly_okabe-ito.png and images/jolly_green-orange.png")
+      "images/jolly_violet.png and images/jolly_green-orange.png")
