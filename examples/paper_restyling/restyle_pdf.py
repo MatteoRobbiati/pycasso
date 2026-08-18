@@ -50,7 +50,7 @@ matexxe.enable_logging()
 
 PDF_IN = "toy_paper/main.pdf"
 PDF_OUT = "toy_paper/main_restyled.pdf"
-PALETTE_NAME = "chalmers"      # matexxe.available() lists the built-ins
+PALETTE_NAME = "persian"      # matexxe.available() lists the built-ins
 MODE = "hue"                    # "snap" | "tint" | "hue" -- see Palette.map
 
 paper = matexxe.Painter(PDF_IN)

@@ -25,7 +25,7 @@ matexxe.enable_logging()
 
 PROJECT_ZIP = "toy_paper.zip"
 OUTPUT_DIR = Path("restyled")
-PALETTES = ["okabe-ito", "tol-bright", "chalmers", "persian", "violet", "green-orange"]
+PALETTES = ["okabe-ito", "tol-bright", "persian", "violet", "green-orange"]
 MODE = "hue"
 
 if not Path(PROJECT_ZIP).is_file():

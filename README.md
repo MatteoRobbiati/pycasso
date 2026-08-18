@@ -51,17 +51,47 @@ uv sync --extra examples
 
 ## What it does
 
-Three ways to recolour something, depending on what you give it:
+A few ways to recolour something, depending on what you give it and how
+much control you want.
+
+For a single image where you already know exactly which colour needs to
+go, skip palettes and `fit()` entirely:
+
+```python
+import matexxe
+
+icon = matexxe.Painter("icon.png")
+
+# make a colour transparent instead of replacing it with another one,
+# shadow_range also catches antialiased pixels that are a slightly
+# different shade of the same colour, not an exact match
+icon.remove_color(color=(143, 163, 220), shadow_range=30)
+
+icon.save("icon_edited.png")
+```
+
+<table>
+<tr><th>before</th><th>after</th></tr>
+<tr>
+<td><img src="docs/public/matexxe-icon-512.png" width="180" alt="icon with a flat blue background"></td>
+<td><img src="docs/public/matexxe-icon-512-transparent.png" width="180" alt="the same icon with the background removed"></td>
+</tr>
+</table>
+
+`replace_colors` works the same way for a straight colour swap instead of a
+removal, see [examples/basic_recolor/recolor_logo.py](examples/basic_recolor/recolor_logo.py)
+for both, run against this exact icon.
+
+For anything bigger than "I know the one colour to change", `matexxe.fit()`
+looks at the colours actually used and assigns each one a replacement from
+a target palette, no need to know the exact colours up front, and no risk
+of guessing a palette that's too big or too small:
 
 ```python
 import matexxe
 
 # a single image or PDF
 painter = matexxe.Painter("logo.png")            # or "figure.pdf"
-
-# matexxe.fit() looks at the colours actually used and assigns each one a
-# replacement from the target palette, no need to know the exact colours
-# up front, and no risk of guessing a palette that's too big or too small
 palette = matexxe.Palette.load("okabe-ito")       # matexxe.available() lists the rest
 fitted = matexxe.fit(painter, palette)
 painter.restyle(fitted, mode="hue")
@@ -121,7 +151,6 @@ Built in (`matexxe.available()`):
 | --- | --- |
 | `okabe-ito` | colourblind-safe qualitative, the standard choice for scientific figures |
 | `tol-bright`, `tol-muted` | Paul Tol's colourblind-safe qualitative schemes |
-| `chalmers` | approximate Chalmers institutional palette, check against the real brand manual before publishing |
 | `persian` | yellow/red/blue/lavender; yellow, red and blue are marked `primary` (see below) |
 | `grayscale` | luminance-separated greys for black-and-white print; has no hue, so only `mode="snap"` works with it |
 | `green-orange`, `violet` | deliberately narrow diagnostic palettes, useful for confirming a restyle actually changed something |

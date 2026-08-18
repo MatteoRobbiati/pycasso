@@ -39,7 +39,7 @@ matexxe.enable_logging()
 
 PROJECT_ZIP = "toy_paper/toy_paper.zip"
 ZIP_OUT = "toy_paper/toy_paper_restyled.zip"
-PALETTE_NAME = "chalmers"
+PALETTE_NAME = "persian"
 MODE = "hue"
 
 # Recompiling locally is entirely optional -- restyle() and save() below
