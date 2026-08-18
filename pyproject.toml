@@ -16,6 +16,11 @@ dependencies = [
     "tomli>=2.0; python_version < '3.11'",
 ]
 
+[project.optional-dependencies]
+# only needed to regenerate the example plots in examples/paper_restyling/toy_paper/ --
+# pycasso itself never needs matplotlib/seaborn to restyle an existing PDF or project
+examples = ["matplotlib>=3.5", "seaborn>=0.12"]
+
 [project.urls]
 Homepage = "https://github.com/MatteoRobbiati/pycasso"
 

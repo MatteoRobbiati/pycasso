@@ -110,7 +110,7 @@ class PaletteFit:
 
 
 def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
-        grey_tolerance:float = DEFAULT_CLUSTER_GREY_TOLERANCE):
+        grey_tolerance:float = DEFAULT_CLUSTER_GREY_TOLERANCE, document_merge_degrees:float = None):
     """
     Assign ``palette`` colours to match ``document``'s own colours.
 
@@ -121,12 +121,23 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
         palette: the target :class:`~pycasso.palette.Palette` to assign
             colours from;
         merge_degrees: hue tolerance used to treat two colours as the same
-            series -- see :func:`~pycasso.cluster.cluster_hues`;
+            series *within one figure* -- see
+            :func:`~pycasso.cluster.cluster_hues`;
         grey_tolerance: how close to grey a colour must be to be excluded
             from the colour count. This only governs *counting*; the later
             ``document.restyle(fitted, ...)`` call has its own
             ``grey_tolerance`` for deciding which pixels actually get
-            repainted, and the two need not match.
+            repainted, and the two need not match;
+        document_merge_degrees: hue tolerance for reconciling colours
+            *across* figures, defaulting to ``merge_degrees + 10``: two
+            plotting libraries' idea of "green" are rarely hue-identical,
+            so treating the whole document as one series would need a
+            wider net than distinguishing genuinely different series
+            within a single figure. Too tight here, and two clusters that
+            are really the same colour used by different tools compete for
+            the same palette family instead of sharing it outright -- the
+            nearer one wins, and the other is pushed onto a visibly
+            different, worse-fitting family it didn't need to be.
 
     Returns:
         A :class:`PaletteFit`, usable wherever a
@@ -148,6 +159,8 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
             "palette), so pycasso.fit() has no hue to assign document colours "
             "to; use a palette with at least one chromatic colour instead"
         )
+    if document_merge_degrees is None:
+        document_merge_degrees = merge_degrees + 10
 
     figures = document.figures
     per_figure = {}
@@ -186,15 +199,29 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
     # per-figure representatives: the same real series colour can pick a
     # slightly different representative shade in different figures, and
     # reclustering representatives risked treating those as separate colours
+    #
+    # each figure's weight is normalised to sum to 1 before merging: a
+    # vector figure's weight is an operator count (a handful of uses) while
+    # a raster figure's is a pixel count (thousands to millions) -- with no
+    # normalisation, one raster figure mixed in with several vector ones
+    # makes every vector colour look like negligible noise purely from a
+    # difference in units, not because it's actually less significant, and
+    # min_weight_fraction below would drop all of them.
     combined = Counter()
     for figure in per_figure:
-        combined.update(figure.colors())
-    document_clusters = cluster_hues(combined, merge_degrees, grey_tolerance)
+        counts = figure.colors()
+        total = sum(counts.values())
+        if not total:
+            continue
+        for hexcode, weight in counts.items():
+            combined[hexcode] += weight / total
+    document_clusters = cluster_hues(combined, document_merge_degrees, grey_tolerance)
     log.info("document as a whole resolves to %d independent colour%s",
               len(document_clusters), "" if len(document_clusters) == 1 else "s")
 
-    chromatic_rgb = palette.rgb[palette._chromatic]
-    chromatic_lab = palette.lab[palette._chromatic]
+    pool = palette.target_pool(len(document_clusters))
+    chromatic_rgb = palette.rgb[pool]
+    chromatic_lab = palette.lab[pool]
     cluster_lab = np.array([c.lab for c in document_clusters])
 
     # target hue per cluster, preferring a distinct hue *family* for each --
@@ -215,7 +242,7 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
 
     for cluster, target_index, color in zip(document_clusters, nearest, assigned):
         note = f" (shared with {sharing[target_index] - 1} other colour(s))" if sharing[target_index] > 1 else ""
-        log.info("  %s (L*=%.0f, weight=%.0f) -> %s%s",
+        log.info("  %s (L*=%.0f, weight=%.3g) -> %s%s",
                   cluster.representative, cluster.lightness, cluster.weight, to_hex(color), note)
 
     return PaletteFit(document_clusters, assigned, palette.name, skip=(f.name for f in skipped))

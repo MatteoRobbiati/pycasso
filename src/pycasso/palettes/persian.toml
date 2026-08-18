@@ -1,0 +1,14 @@
+name = "persian"
+description = "Yellow, red, blue and lavender in the 'Persian' family, matching the citecolor/textcolor scheme used in the author's own papers (persianred, mediumpersianblue, darklavender)."
+
+colors = [
+    "#E8A93A",  # persian yellow
+    "#CC3333",  # persian red
+    "#0066A6",  # medium persian blue
+    "#734F96",  # dark lavender
+]
+
+# yellow, red and blue are this palette's signature colours -- they get
+# first claim whenever a document doesn't need every colour available;
+# lavender only joins once a document has more than 3 independent colours
+primary = ["#E8A93A", "#CC3333", "#0066A6"]

@@ -29,14 +29,21 @@ def available():
 
 
 class Palette:
-    def __init__(self, name:str, colors, description:str = ""):
+    def __init__(self, name:str, colors, description:str = "", primary=None):
         """
         An ordered set of colours to map artwork onto.
 
         Args:
             name: identifier used when loading and reporting;
             colors: iterable of hex strings or RGB triplets;
-            description: free text shown in ``repr`` and audit reports.
+            description: free text shown in ``repr`` and audit reports;
+            primary: subset of ``colors`` (same hex/RGB values) that should
+                be preferred whenever :func:`~pycasso.fit.fit` doesn't need
+                every chromatic colour -- e.g. a house style's two or three
+                signature colours, with the rest of the palette as extra
+                capacity only pulled in once a document genuinely has more
+                independent colours than the primary set covers. Defaults
+                to every chromatic colour (today's behaviour) when omitted.
         """
         if not len(colors):
             raise ValueError(f"palette {name!r} has no colours")
@@ -47,15 +54,41 @@ class Palette:
         self.lab = to_lab(self.rgb)
         chroma = np.hypot(self.lab[:, 1], self.lab[:, 2])
         self._chromatic = np.flatnonzero(chroma > 1.0)
+
+        if primary:
+            primary_hex = {to_hex(parse(entry)) for entry in primary}
+            self._primary = np.array([i for i in self._chromatic if self.colors[i] in primary_hex])
+            unmatched = primary_hex - {self.colors[i] for i in self._primary}
+            if unmatched:
+                log.warning("palette %r: primary colour(s) %s not found among its own colours",
+                            name, ", ".join(sorted(unmatched)))
+        else:
+            self._primary = self._chromatic
+
         log.debug(
-            "built palette %r: %d colours (%d chromatic, %d achromatic)",
-            name, len(self), len(self._chromatic), len(self) - len(self._chromatic),
+            "built palette %r: %d colours (%d chromatic, %d achromatic, %d primary)",
+            name, len(self), len(self._chromatic), len(self) - len(self._chromatic), len(self._primary),
         )
 
     @property
     def supports_hue(self):
         """Whether this palette has at least one non-grey colour to match hue against."""
         return len(self._chromatic) > 0
+
+    def target_pool(self, needed:int):
+        """
+        Chromatic colour indices to assign from, given ``needed`` targets are wanted.
+
+        Primary colours (see ``__init__``) are always included first; the
+        remaining chromatic colours only join once ``needed`` exceeds how
+        many primary colours exist, so a house style's signature colours
+        get first claim and the rest of the palette is pure overflow
+        capacity.
+        """
+        if needed <= len(self._primary):
+            return self._primary
+        extra = [i for i in self._chromatic if i not in set(self._primary)]
+        return np.concatenate([self._primary, extra]) if extra else self._primary
 
     @classmethod
     def load(cls, name:str):
@@ -76,6 +109,7 @@ class Palette:
             name=data.get("name", path.stem),
             colors=data["colors"],
             description=data.get("description", ""),
+            primary=data.get("primary"),
         )
 
     def nearest_index(self, color):

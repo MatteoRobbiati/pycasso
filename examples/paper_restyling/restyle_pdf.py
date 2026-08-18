@@ -35,7 +35,10 @@ leave such figures untouched instead.
 
 Run from this directory:
 
-    uv run python restyle_paper.py
+    uv run python restyle_pdf.py
+
+PDF_IN below is the synthetic toy paper (see toy_paper/make_toy_paper.py) --
+point it at any other compiled PDF to try this on a paper of your own.
 """
 
 from pathlib import Path
@@ -45,8 +48,8 @@ import pycasso
 # print pycasso's progress to the terminal; comment out for silence
 pycasso.enable_logging()
 
-PDF_IN = "test_paper.pdf"
-PDF_OUT = "test_paper_restyled.pdf"
+PDF_IN = "toy_paper/main.pdf"
+PDF_OUT = "toy_paper/main_restyled.pdf"
 PALETTE_NAME = "chalmers"      # pycasso.available() lists the built-ins
 MODE = "hue"                    # "snap" | "tint" | "hue" -- see Palette.map
 

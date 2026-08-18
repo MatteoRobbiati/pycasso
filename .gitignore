@@ -11,3 +11,22 @@ dist/
 
 # macOS
 .DS_Store
+.ipynb_checkpoints/
+
+# LaTeX build artifacts (examples/paper_restyling/*/*.aux etc.)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# regeneratable example outputs
+examples/paper_restyling/toy_paper/restyled/
+examples/paper_restyling/toy_paper/toy_paper_source/main.pdf
+examples/paper_restyling/toy_paper/main_restyled.pdf
+examples/paper_restyling/toy_paper/toy_paper_restyled.zip
+examples/paper_restyling/toy_paper/toy_paper_restyled.pdf
+examples/basic_recolor/images/jolly_*.png
+examples/basic_recolor/images/chalmers_logo_white.png

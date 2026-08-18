@@ -211,7 +211,7 @@ def assign_families(source_hues, target_hues, priority=None, family_degrees:floa
 
 def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
                   grey_tolerance:float = DEFAULT_CLUSTER_GREY_TOLERANCE,
-                  min_weight_fraction:float = 0.005):
+                  min_weight_fraction:float = 0.005, consolidate:bool = False):
     """
     Group a colour histogram into independent hues.
 
@@ -228,7 +228,19 @@ def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
         min_weight_fraction: clusters accounting for less than this fraction
             of the total chromatic weight are dropped as noise -- a single
             anti-aliased edge pixel that happens to sit just past
-            ``grey_tolerance`` should not count as an independent colour.
+            ``grey_tolerance`` should not count as an independent colour;
+        consolidate: also merge any two *final* clusters that end up within
+            ``merge_degrees`` of each other, even though neither was ever
+            compared directly against the other during the main pass (see
+            :func:`consolidate_hues`). Correct for finding the anchors of
+            one genuinely continuous gradient, where far-apart clusters
+            bridged by intermediate shades really are one thing -- wrong
+            for counting how many independent *categorical* colours a
+            figure (or a whole document's worth of unrelated figures) uses,
+            where unrelated colours from different sources can easily
+            happen to chain together across the hue wheel with no real
+            relationship between them. Defaults to off for exactly that
+            reason; :func:`~pycasso.cmap.anchors` turns it on explicitly.
 
     Returns:
         Clusters, heaviest first.
@@ -259,14 +271,8 @@ def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
                 continue
         clusters.append(ColorCluster(lab[index], weights[index], hexes[index]))
 
-    # the greedy pass above only ever compares a new colour against clusters
-    # that already exist -- it never revisits two clusters against each
-    # other once both are formed. Two clusters seeded from opposite,
-    # far-apart ends of one smooth gradient can end up within merge_degrees
-    # of each other's *final* centre without that ever being checked, so a
-    # single continuous ramp gets reported as two separate colours. Fix that
-    # up here by merging any final clusters still within threshold.
-    clusters = _consolidate(clusters, threshold)
+    if consolidate:
+        clusters = consolidate_hues(clusters, merge_degrees)
 
     clusters.sort(key=lambda c: c.weight, reverse=True)
 
@@ -289,8 +295,23 @@ def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
     return clusters
 
 
-def _consolidate(clusters, threshold):
-    """Merge clusters repeatedly while the closest pair is within ``threshold``."""
+def consolidate_hues(clusters, merge_degrees:float):
+    """
+    Merge clusters repeatedly while the closest pair is within ``merge_degrees``.
+
+    Intended for a *single* genuinely continuous gradient (see
+    :func:`~pycasso.cmap.anchors`), where two clusters seeded from opposite
+    ends of the same smooth ramp can end up within threshold of each
+    other's centre without ever being compared during
+    :func:`cluster_hues`'s single greedy pass -- which only ever checks a
+    new colour against clusters that already exist, never two existing
+    clusters against each other. Chain-merging across a *combined*
+    histogram from several unrelated figures is a different matter: any
+    two clusters this repeated nearest-pair merge brings together, however
+    indirectly, end up combined, so a handful of intermediate shades can
+    chain together colours with no real relationship to one another.
+    """
+    threshold = np.radians(merge_degrees)
     clusters = list(clusters)
     while len(clusters) > 1:
         hues = np.array([c.hue for c in clusters])

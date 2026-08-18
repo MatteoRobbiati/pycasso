@@ -42,6 +42,25 @@ GRAPHICS_EXTENSIONS = (".pdf", ".png", ".jpg", ".jpeg", ".eps")
 _JUNK_NAMES = {".ds_store"}
 
 
+class _WithSkip:
+    """
+    ``palette``, but with ``.skip`` replaced.
+
+    Used by :meth:`Project.restyle` to hand each asset a version of the
+    palette whose ``.skip`` has been translated from globally-qualified
+    figure names back to that one asset's own unqualified names -- every
+    other attribute (``.map()``, ``.name``, ``.clusters``, ``.assigned``,
+    ...) forwards straight through to ``palette``.
+    """
+
+    def __init__(self, palette, skip):
+        self._palette = palette
+        self.skip = frozenset(skip)
+
+    def __getattr__(self, name):
+        return getattr(self._palette, name)
+
+
 #: listings-package style keys that set actual syntax-highlight colour --
 #: deliberately excludes backgroundcolor/rulecolor (the code block's
 #: background and border, structural chrome that should stay put) and
@@ -243,10 +262,23 @@ class Project:
 
     @property
     def figures(self):
-        """Every figure across every figure asset -- what :func:`~pycasso.fit.fit` sizes the palette from."""
+        """
+        Every figure across every figure asset -- what :func:`~pycasso.fit.fit` sizes the palette from.
+
+        Names are qualified with their owning asset (``"asset::figure"``).
+        Two different single-page assets both name their own page figure
+        ``"page1"`` -- entirely reasonable on its own, since each asset's
+        ``.figures`` is independently unique -- but collecting them across
+        assets without qualifying first would silently conflate two
+        unrelated figures that happen to share a name, corrupting
+        :attr:`~pycasso.fit.PaletteFit.skip`. :meth:`restyle` translates
+        the qualified names back before handing each asset its own figures.
+        """
         found = []
-        for painter in self.assets.values():
-            found.extend(painter.figures)
+        for asset, painter in self.assets.items():
+            for figure in painter.figures:
+                figure.name = f"{asset}::{figure.name}"
+                found.append(figure)
         return found
 
     def colors(self):
@@ -293,8 +325,16 @@ class Project:
         extracted project and pack it into a new zip.
         """
         self.changes = Counter()
+        global_skip = set(getattr(palette, "skip", ()))
         for asset, painter in self.assets.items():
-            painter.restyle(palette, mode=mode, keep_greys=keep_greys, grey_tolerance=grey_tolerance,
+            # translate the globally-qualified skip set back to this
+            # asset's own unqualified figure names -- see .figures for why
+            # the qualification exists in the first place
+            prefix = f"{asset}::"
+            local_skip = {name[len(prefix):] for name in global_skip if name.startswith(prefix)}
+            asset_palette = _WithSkip(palette, local_skip) if local_skip else palette
+
+            painter.restyle(asset_palette, mode=mode, keep_greys=keep_greys, grey_tolerance=grey_tolerance,
                              recolor_colormaps=recolor_colormaps)
             self.changes.update(getattr(painter, "changes", None) or {})
 
@@ -351,7 +391,7 @@ class Project:
         if hasattr(palette, "clusters") and hasattr(palette, "assigned") and palette.clusters:
             target_rgb_pool = palette.assigned
         else:
-            target_rgb_pool = palette.rgb[palette._chromatic]
+            target_rgb_pool = palette.rgb[palette.target_pool(len(names))]
         target_hue = np.arctan2(to_lab(target_rgb_pool)[:, 2], to_lab(target_rgb_pool)[:, 1])
         families = hue_families(target_hue, merge_degrees=30.0)
 

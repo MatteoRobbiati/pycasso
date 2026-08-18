@@ -107,9 +107,17 @@ class ColormapFit:
 
 def anchors(counts, merge_degrees:float = DEFAULT_ANCHOR_DEGREES,
             grey_tolerance:float = 0.06, min_weight_fraction:float = DEFAULT_MIN_ANCHOR_WEIGHT):
-    """The dominant hue anchors of a continuous colormap's colour histogram."""
+    """
+    The dominant hue anchors of a continuous colormap's colour histogram.
+
+    ``consolidate=True`` here (unlike plain :func:`~pycasso.cluster.cluster_hues`):
+    this is one figure's own single gradient, so two clusters that end up
+    close to each other's centre after the main pass -- typically the two
+    ends of one smooth ramp, split apart by a greedy processing-order
+    artefact -- really are one thing and should fold back together.
+    """
     return cluster_hues(counts, merge_degrees=merge_degrees, grey_tolerance=grey_tolerance,
-                         min_weight_fraction=min_weight_fraction)
+                         min_weight_fraction=min_weight_fraction, consolidate=True)
 
 
 def fit_colormap(figure, palette, merge_degrees:float = DEFAULT_ANCHOR_DEGREES):
@@ -145,7 +153,7 @@ def fit_colormap(figure, palette, merge_degrees:float = DEFAULT_ANCHOR_DEGREES):
     if hasattr(palette, "clusters") and hasattr(palette, "assigned") and palette.clusters:
         target_rgb = palette.assigned
     else:
-        target_rgb = palette.rgb[palette._chromatic]
+        target_rgb = palette.rgb[palette.target_pool(len(found))]
     # the hue that matters here is the *replacement* colour's own hue, not
     # whatever hue the original document cluster happened to have before
     # being reassigned -- using the latter picks anchors by an accident of
