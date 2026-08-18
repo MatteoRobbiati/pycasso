@@ -16,7 +16,7 @@ try this on a paper of your own.
 
 A figure `fit()` recognises as a continuous colormap (a heatmap, a
 colourbar) is not simply left untouched: `restyle()` recolours it
-separately with `pycasso.fit_colormap()`, blending continuously between the
+separately with `matexxe.fit_colormap()`, blending continuously between the
 figure's own dominant hues (reusing `fitted`'s own assigned colours as
 their replacements) instead of snapping to a handful of discrete ones --
 see restyle_pdf.py's docstring for why that distinction matters.
@@ -33,9 +33,9 @@ Run from this directory:
 
 from pathlib import Path
 
-import pycasso
+import matexxe
 
-pycasso.enable_logging()
+matexxe.enable_logging()
 
 PROJECT_ZIP = "toy_paper/toy_paper.zip"
 ZIP_OUT = "toy_paper/toy_paper_restyled.zip"
@@ -48,14 +48,14 @@ MODE = "hue"
 TRY_LOCAL_COMPILE = True
 PDF_OUT = "toy_paper/toy_paper_restyled.pdf"
 
-project = pycasso.Project(PROJECT_ZIP)
-palette = pycasso.Palette.load(PALETTE_NAME)
+project = matexxe.Project(PROJECT_ZIP)
+palette = matexxe.Palette.load(PALETTE_NAME)
 
 print(f"\n{project}")
 print(f"figure assets: {list(project.assets)}")
 print(f"\\definecolor entries: {project.tex_colors}\n")
 
-fitted = pycasso.fit(project, palette)
+fitted = matexxe.fit(project, palette)
 project.restyle(fitted, mode=MODE)   # recolours every asset (incl. colormaps) + every chromatic \definecolor
 project.save(ZIP_OUT)                # flushes every asset to disk, then packs the new zip
 

@@ -1,5 +1,5 @@
 """
-PDF backend for :class:`~pycasso.workshop.Painter`.
+PDF backend for :class:`~matexxe.workshop.Painter`.
 
 Figures placed with ``\\includegraphics`` land in their own Form XObject, and
 bitmaps in their own Image XObject. Restyling only those objects means the body
@@ -15,9 +15,9 @@ import numpy as np
 import pikepdf
 from pikepdf import Name, Operator, parse_content_stream, unparse_content_stream
 
-from pycasso.cmap import fit_colormap
-from pycasso.color import to_hex
-from pycasso.workshop import ImagePainter, Painter, backend
+from matexxe.cmap import fit_colormap
+from matexxe.color import to_hex
+from matexxe.workshop import ImagePainter, Painter, backend
 
 log = logging.getLogger(__name__)
 
@@ -118,7 +118,7 @@ class PageFigure(PdfFigure):
     A page assembled by LaTeX draws its body text directly in the page's own
     content stream, which restyling must never touch. A standalone figure
     file exported straight from matplotlib/TikZ (typical of an
-    ``\\includegraphics`` target opened on its own, as :class:`~pycasso.project.Project`
+    ``\\includegraphics`` target opened on its own, as :class:`~matexxe.project.Project`
     does) often has no such distinction: axes, frames and paths can be drawn
     directly on the page rather than wrapped in a Form XObject, so the page
     *is* the figure. This type covers only the page's own operators --
@@ -326,15 +326,15 @@ class PdfPainter(Painter):
         Snap every figure onto ``palette``.
 
         Args:
-            palette: the target :class:`~pycasso.palette.Palette`;
+            palette: the target :class:`~matexxe.palette.Palette`;
             mode: how much of the original colour to keep -- see
-                :meth:`Palette.map <pycasso.palette.Palette.map>`;
+                :meth:`Palette.map <matexxe.palette.Palette.map>`;
             keep_greys: leave achromatic colours alone, so axes, rules and
                 labels keep their original neutral tone;
             grey_tolerance: how close to grey a colour must be to count;
             recolor_colormaps: figures ``palette`` flagged as a continuous
-                colormap (see ``.skip``, set by :func:`~pycasso.fit.fit`) are
-                recoloured separately with :func:`~pycasso.cmap.fit_colormap`
+                colormap (see ``.skip``, set by :func:`~matexxe.fit.fit`) are
+                recoloured separately with :func:`~matexxe.cmap.fit_colormap`
                 instead of being left untouched. That reuses ``palette``'s
                 own assigned colours as the colormap's anchors, so a
                 colourbar ends up built from the same colours the rest of
@@ -350,7 +350,7 @@ class PdfPainter(Painter):
         if skip:
             colormap_figures = [figure for figure in figures if figure.name in skip]
             figures = [figure for figure in figures if figure.name not in skip]
-            log.info("%d figure(s) flagged as continuous colormaps by pycasso.fit(): %s",
+            log.info("%d figure(s) flagged as continuous colormaps by matexxe.fit(): %s",
                       len(colormap_figures), ", ".join(sorted(f.name for f in colormap_figures)))
 
         log.info("restyling %d figures in %s with palette %r (mode=%r)", len(figures), self.imagepath, name, mode)

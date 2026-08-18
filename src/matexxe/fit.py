@@ -2,7 +2,7 @@
 Fit a palette to the colours a document actually uses.
 
 Mapping every original colour independently onto the nearest palette entry
-(:meth:`Palette.map <pycasso.palette.Palette.map>`) works pixel by pixel and
+(:meth:`Palette.map <matexxe.palette.Palette.map>`) works pixel by pixel and
 has no notion of "how many colours does this document really need" -- a
 palette with too many entries can spread near-identical original hues across
 several outputs, and one with too few silently collapses distinct series onto
@@ -16,7 +16,7 @@ the same replacement.
    the busiest figure need to keep visually distinct. Figures that look like
    a continuous colormap (a heatmap, a density plot) rather than a handful
    of series colours are excluded here and left untouched by ``restyle()``
-   -- see :func:`~pycasso.cluster.looks_continuous`;
+   -- see :func:`~matexxe.cluster.looks_continuous`;
 2. cluster the whole document's colours together in one pass, so the same
    real-world series colour is recognised consistently across figures
    rather than independently per figure;
@@ -27,7 +27,7 @@ the same replacement.
    reshuffles colours that were already assigned.
 
 The result is a :class:`PaletteFit`, which answers ``.map()`` exactly like a
-:class:`~pycasso.palette.Palette` and can be passed anywhere one is expected.
+:class:`~matexxe.palette.Palette` and can be passed anywhere one is expected.
 """
 
 import logging
@@ -35,7 +35,7 @@ from collections import Counter
 
 import numpy as np
 
-from pycasso.cluster import (
+from matexxe.cluster import (
     DEFAULT_CLUSTER_GREY_TOLERANCE,
     DEFAULT_MERGE_DEGREES,
     assign_families,
@@ -43,7 +43,7 @@ from pycasso.cluster import (
     describe,
     looks_continuous,
 )
-from pycasso.color import from_lab, is_achromatic, to_hex, to_lab
+from matexxe.color import from_lab, is_achromatic, to_hex, to_lab
 
 log = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ class PaletteFit:
         return best_index
 
     def map(self, rgb, mode:str = "hue", keep_greys:bool = True, grey_tolerance:float = 0.04):
-        """Same contract as :meth:`Palette.map <pycasso.palette.Palette.map>`."""
+        """Same contract as :meth:`Palette.map <matexxe.palette.Palette.map>`."""
         rgb = np.asarray(rgb, dtype=float)
         lab = to_lab(rgb)
         index = self._nearest_cluster(lab)
@@ -116,13 +116,13 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
 
     Args:
         document: anything with a ``.figures`` list of objects answering
-            ``.colors()`` -- a :class:`~pycasso.paper.PdfPainter` or a plain
-            :class:`~pycasso.workshop.ImagePainter`;
-        palette: the target :class:`~pycasso.palette.Palette` to assign
+            ``.colors()`` -- a :class:`~matexxe.paper.PdfPainter` or a plain
+            :class:`~matexxe.workshop.ImagePainter`;
+        palette: the target :class:`~matexxe.palette.Palette` to assign
             colours from;
         merge_degrees: hue tolerance used to treat two colours as the same
             series *within one figure* -- see
-            :func:`~pycasso.cluster.cluster_hues`;
+            :func:`~matexxe.cluster.cluster_hues`;
         grey_tolerance: how close to grey a colour must be to be excluded
             from the colour count. This only governs *counting*; the later
             ``document.restyle(fitted, ...)`` call has its own
@@ -141,9 +141,9 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
 
     Returns:
         A :class:`PaletteFit`, usable wherever a
-        :class:`~pycasso.palette.Palette` is::
+        :class:`~matexxe.palette.Palette` is::
 
-            fitted = pycasso.fit(document, palette)
+            fitted = matexxe.fit(document, palette)
             document.restyle(fitted, mode="hue")
 
         Figures that look like a continuous colormap are recorded on
@@ -156,7 +156,7 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
     if not palette.supports_hue:
         raise ValueError(
             f"palette {palette.name!r} is entirely achromatic (e.g. a grayscale "
-            "palette), so pycasso.fit() has no hue to assign document colours "
+            "palette), so matexxe.fit() has no hue to assign document colours "
             "to; use a palette with at least one chromatic colour instead"
         )
     if document_merge_degrees is None:
@@ -174,7 +174,7 @@ def fit(document, palette, merge_degrees:float = DEFAULT_MERGE_DEGREES,
             log.warning(
                 "%s looks like a continuous colormap (many distinct colours, none "
                 "dominant) rather than a handful of series colours -- leaving it "
-                "untouched; see pycasso.cluster.looks_continuous to tune this",
+                "untouched; see matexxe.cluster.looks_continuous to tune this",
                 figure,
             )
             skipped.append(figure)

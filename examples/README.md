@@ -4,7 +4,7 @@
 
 The simplest cases: recolouring one image directly, either by exact colour
 swap (`replace_colors`) or automatically via a palette (`fit()`/`restyle()`).
-Start here if you're new to `pycasso`.
+Start here if you're new to `matexxe`.
 
 ```sh
 cd basic_recolor && uv run python recolor_logo.py
@@ -28,7 +28,7 @@ small, entirely synthetic paper (see `make_toy_paper.py`), with eight
 figures deliberately plotted with clashing, mismatched colour schemes
 (matplotlib's tab10, seaborn's Set2, Dark2 and Accent, three unrelated
 continuous colormaps, and a flat PNG logo) -- exactly the kind of
-inconsistency `pycasso.fit()` is meant to clean up, without needing anyone's
+inconsistency `matexxe.fit()` is meant to clean up, without needing anyone's
 real research code or data. `restyle_all_palettes.py` runs the whole project
 through several palettes and saves one PDF per palette, so you can flip
 between them and compare. Needs matplotlib/seaborn (`uv sync --extra examples`)
@@ -41,7 +41,7 @@ cd paper_restyling && uv run python restyle_project.py
 cd paper_restyling/toy_paper && uv run python restyle_all_palettes.py
 ```
 
-## `pycasso_tutorial.ipynb`
+## `matexxe_tutorial.ipynb`
 
 A notebook walkthrough of the lower-level `Painter` image API
 (`remove_color`, `replace_colors`, resizing, ...).

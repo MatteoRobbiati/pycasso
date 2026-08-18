@@ -1,4 +1,6 @@
-![pycasso](https://github.com/MatteoRobbiati/pycasso/assets/62071516/5e0a7459-692f-4e2d-9a9b-fcf881e3399a)
+![MaTeXXe](docs/public/matexxe_wordmark_only_pastel.svg)
+
+**Your last co-author before arXiv.**
 
 Automatic recolouring for images, PDFs and whole LaTeX papers, built on
 [pillow](https://github.com/python-pillow/Pillow), [pikepdf](https://github.com/pikepdf/pikepdf)
@@ -7,28 +9,38 @@ and [numpy](https://numpy.org).
 I was tired of using graphical apps to remove backgrounds and replace
 colours by hand and, later, of manually hunting down every mismatched
 colour across a paper's figures, hyperlinks and code listings every time a
-co-author changed the house style. `pycasso` does both automatically.
+co-author changed the house style. `matexxe` does both automatically.
+
+## Why "MaTeXXe"
+
+The name folds together **Ma**tisse -- the painter who pushed colour
+further than almost anyone, leader of the Fauvist ("wild beast") movement
+that used raw, unmixed colour as the whole subject of a painting, not just
+a detail of it -- with **TeX**, since a paper's `.tex` source is exactly
+what this tool works from. The lowered "e" nods to the TeX logo itself, and
+the two tilted X's double as two Greek chi (χ), a quieter nod to the
+physics papers this started out recolouring.
 
 ## Install it
 
-`pycasso` is managed with [uv](https://docs.astral.sh/uv/). Clone this repo and let
+`matexxe` is managed with [uv](https://docs.astral.sh/uv/). Clone this repo and let
 `uv` set up the environment for you:
 
 ```sh
 uv sync
 ```
 
-This creates a `.venv` with `pycasso` installed in editable mode. Run anything
+This creates a `.venv` with `matexxe` installed in editable mode. Run anything
 inside it with `uv run`, e.g. `uv run python examples/basic_recolor/recolor_logo.py`.
 
-To add `pycasso` to an environment of your own instead:
+To add `matexxe` to an environment of your own instead:
 
 ```sh
 uv pip install .
 ```
 
 Regenerating the example plots in `examples/paper_restyling/toy_paper/` needs
-matplotlib/seaborn, which plain `pycasso` does not otherwise depend on:
+matplotlib/seaborn, which plain `matexxe` does not otherwise depend on:
 
 ```sh
 uv sync --extra examples
@@ -39,16 +51,16 @@ uv sync --extra examples
 Three ways to recolour something, depending on what you give it:
 
 ```python
-import pycasso
+import matexxe
 
 # a single image or PDF
-painter = pycasso.Painter("logo.png")            # or "figure.pdf"
+painter = matexxe.Painter("logo.png")            # or "figure.pdf"
 
-# pycasso.fit() looks at the colours actually used and assigns each one a
+# matexxe.fit() looks at the colours actually used and assigns each one a
 # replacement from the target palette -- no need to know the exact colours
 # up front, and no risk of guessing a palette that's too big or too small
-palette = pycasso.Palette.load("okabe-ito")       # pycasso.available() lists the rest
-fitted = pycasso.fit(painter, palette)
+palette = matexxe.Palette.load("okabe-ito")       # matexxe.available() lists the rest
+fitted = matexxe.fit(painter, palette)
 painter.restyle(fitted, mode="hue")
 painter.save("logo_restyled.png")
 ```
@@ -57,15 +69,15 @@ painter.save("logo_restyled.png")
 # a whole paper's Overleaf source (a "Source" download, or an already-
 # extracted project directory) -- not just the compiled PDF, but every
 # figure asset, hyperlink colour and code-listing syntax colour too
-project = pycasso.Project("paper.zip")
-fitted = pycasso.fit(project, palette)
+project = matexxe.Project("paper.zip")
+fitted = matexxe.fit(project, palette)
 project.restyle(fitted, mode="hue")
 project.save("paper_restyled.zip")   # re-upload to Overleaf and recompile,
                                       # or project.compile(...) locally
 ```
 
 See [examples/](examples/) for complete, runnable versions of both, plus a
-synthetic "toy paper" restyled through four different palettes.
+synthetic "toy paper" restyled through several different palettes.
 
 ## How `fit()` decides what to do
 
@@ -100,7 +112,7 @@ Achromatic pixels (axes, rules, body text) are left untouched by default
 
 ## Palettes
 
-Built in (`pycasso.available()`):
+Built in (`matexxe.available()`):
 
 | name | notes |
 | --- | --- |
@@ -111,9 +123,9 @@ Built in (`pycasso.available()`):
 | `grayscale` | luminance-separated greys for black-and-white print; has no hue, so only `mode="snap"` works with it |
 | `green-orange`, `violet` | deliberately narrow diagnostic palettes, useful for confirming a restyle actually changed something |
 
-Load one with `pycasso.Palette.load("name")`, or write your own as a small
-TOML file (see `src/pycasso/palettes/*.toml` for the format) and load it with
-`pycasso.Palette.from_file("mine.toml")`. A palette can optionally mark a
+Load one with `matexxe.Palette.load("name")`, or write your own as a small
+TOML file (see `src/matexxe/palettes/*.toml` for the format) and load it with
+`matexxe.Palette.from_file("mine.toml")`. A palette can optionally mark a
 few colours `primary` -- its signature colours, which get first claim
 whenever a document doesn't need every colour available; the rest of the
 palette only joins once a document genuinely has more independent colours
@@ -121,16 +133,16 @@ than the primary set covers.
 
 ## Logging
 
-`pycasso` stays silent by default. Turn on progress messages -- what was
+`matexxe` stays silent by default. Turn on progress messages -- what was
 found, what got mapped to what, and clear warnings when something looks
 off -- with:
 
 ```python
-pycasso.enable_logging()
+matexxe.enable_logging()
 ```
 
 ## Tutorial
 
 A notebook walkthrough of the low-level image API is in
-[examples/pycasso_tutorial.ipynb](examples/pycasso_tutorial.ipynb); for the
+[examples/matexxe_tutorial.ipynb](examples/matexxe_tutorial.ipynb); for the
 palette/`fit()`/`Project` workflow, see [examples/](examples/).

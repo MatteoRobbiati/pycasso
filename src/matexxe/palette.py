@@ -16,7 +16,7 @@ try:
 except ModuleNotFoundError:  # python < 3.11
     import tomli as tomllib
 
-from pycasso.color import delta_e, from_lab, is_achromatic, parse, to_hex, to_lab
+from matexxe.color import delta_e, from_lab, is_achromatic, parse, to_hex, to_lab
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ _BUILTIN_DIR = Path(__file__).parent / "palettes"
 
 
 def available():
-    """Names of the palettes bundled with pycasso."""
+    """Names of the palettes bundled with matexxe."""
     return sorted(path.stem for path in _BUILTIN_DIR.glob("*.toml"))
 
 
@@ -38,7 +38,7 @@ class Palette:
             colors: iterable of hex strings or RGB triplets;
             description: free text shown in ``repr`` and audit reports;
             primary: subset of ``colors`` (same hex/RGB values) that should
-                be preferred whenever :func:`~pycasso.fit.fit` doesn't need
+                be preferred whenever :func:`~matexxe.fit.fit` doesn't need
                 every chromatic colour -- e.g. a house style's two or three
                 signature colours, with the rest of the palette as extra
                 capacity only pulled in once a document genuinely has more

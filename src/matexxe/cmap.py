@@ -1,14 +1,14 @@
 """
 Recolour a continuous colormap (a heatmap, a density plot, a colourbar).
 
-The cluster-and-snap approach in :mod:`pycasso.fit` treats a figure's colours
+The cluster-and-snap approach in :mod:`matexxe.fit` treats a figure's colours
 as a handful of discrete, independent series -- exactly the wrong model for
 a continuous colormap, where colour encodes a continuous quantity and every
 pixel's hue carries meaning. Recolouring one that way either flattens the
 gradient onto a few discrete colours (banding) or, worse, buckets nearby
 parts of the ramp onto the wrong discrete colour entirely -- see
-:func:`~pycasso.cluster.looks_continuous` for how such figures are detected
-and skipped by :func:`~pycasso.fit.fit`.
+:func:`~matexxe.cluster.looks_continuous` for how such figures are detected
+and skipped by :func:`~matexxe.fit.fit`.
 
 :func:`fit_colormap` instead:
 
@@ -17,7 +17,7 @@ and skipped by :func:`~pycasso.fit.fit`.
    resolves to one;
 2. assigns each anchor the nearest hue available as a target -- preferably
    a colour the rest of the document already settled on (pass the
-   :class:`~pycasso.fit.PaletteFit` from an earlier :func:`~pycasso.fit.fit`
+   :class:`~matexxe.fit.PaletteFit` from an earlier :func:`~matexxe.fit.fit`
    call), so the colormap's anchors read as the same colours used elsewhere;
 3. recolours every pixel by *continuously* blending between the assigned
    anchor hues, weighted by angular closeness to each anchor (inverse-
@@ -33,8 +33,8 @@ from collections import Counter
 
 import numpy as np
 
-from pycasso.cluster import assign_families, cluster_hues
-from pycasso.color import from_lab, is_achromatic, to_hex, to_lab
+from matexxe.cluster import assign_families, cluster_hues
+from matexxe.color import from_lab, is_achromatic, to_hex, to_lab
 
 log = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ class ColormapFit:
         return np.arctan2(blended[..., 1], blended[..., 0])
 
     def map(self, rgb, mode:str = "hue", keep_greys:bool = True, grey_tolerance:float = 0.04):
-        """Same contract as :meth:`Palette.map <pycasso.palette.Palette.map>`."""
+        """Same contract as :meth:`Palette.map <matexxe.palette.Palette.map>`."""
         rgb = np.asarray(rgb, dtype=float)
         lab = to_lab(rgb)
         hue = np.arctan2(lab[..., 2], lab[..., 1])
@@ -110,7 +110,7 @@ def anchors(counts, merge_degrees:float = DEFAULT_ANCHOR_DEGREES,
     """
     The dominant hue anchors of a continuous colormap's colour histogram.
 
-    ``consolidate=True`` here (unlike plain :func:`~pycasso.cluster.cluster_hues`):
+    ``consolidate=True`` here (unlike plain :func:`~matexxe.cluster.cluster_hues`):
     this is one figure's own single gradient, so two clusters that end up
     close to each other's centre after the main pass -- typically the two
     ends of one smooth ramp, split apart by a greedy processing-order
@@ -126,21 +126,21 @@ def fit_colormap(figure, palette, merge_degrees:float = DEFAULT_ANCHOR_DEGREES):
 
     Args:
         figure: the figure to recolour -- typically one named in a
-            :class:`~pycasso.fit.PaletteFit`'s ``.skip``;
-        palette: the target palette. Pass the :class:`~pycasso.fit.PaletteFit`
-            from an earlier :func:`~pycasso.fit.fit` call on the same
+            :class:`~matexxe.fit.PaletteFit`'s ``.skip``;
+        palette: the target palette. Pass the :class:`~matexxe.fit.PaletteFit`
+            from an earlier :func:`~matexxe.fit.fit` call on the same
             document if you have one -- its own discovered colours become
             the assignment targets, so the colormap's anchors line up with
-            the rest of the document; a plain :class:`~pycasso.palette.Palette`
+            the rest of the document; a plain :class:`~matexxe.palette.Palette`
             works too, assigning from its chromatic colours directly;
         merge_degrees: hue tolerance used to find the figure's own anchors --
             see :func:`anchors`.
 
     Returns:
         A :class:`ColormapFit`, usable anywhere a
-        :class:`~pycasso.palette.Palette` is::
+        :class:`~matexxe.palette.Palette` is::
 
-            colormap_fit = pycasso.cmap.fit_colormap(figure, fitted)
+            colormap_fit = matexxe.cmap.fit_colormap(figure, fitted)
             figure.restyle(colormap_fit, mode="hue")
     """
     found = anchors(figure.colors(), merge_degrees=merge_degrees)

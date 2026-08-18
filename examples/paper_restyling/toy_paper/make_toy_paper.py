@@ -1,16 +1,16 @@
 """
-Generate a small, entirely synthetic "paper" about pycasso itself, used to
+Generate a small, entirely synthetic "paper" about matexxe itself, used to
 demo the Project workflow end to end -- no real research code or data.
 
 Eight figures, each plotted with a different, clashing colour scheme on
 purpose: matplotlib's tab10, seaborn's Set2, Dark2, Accent, a diverging
 coolwarm heatmap, a sequential viridis contour plot, a plasma noise field,
-and a plain PNG logo -- plus a couple of `pycasso` code snippets in the
+and a plain PNG logo -- plus a couple of `matexxe` code snippets in the
 text itself. Every figure's caption names its original colour source with a
 link, so it's easy to look up what a palette or colormap is actually called
 before and after a restyle.
 
-Needs matplotlib/seaborn, which plain pycasso does not depend on:
+Needs matplotlib/seaborn, which plain matexxe does not depend on:
 
     uv sync --extra examples
     uv run python make_toy_paper.py
@@ -59,7 +59,7 @@ methods = [f"v{i}" for i in range(1, 9)]
 runtime = rng.uniform(0.35, 1.0, size=len(methods))
 fig, ax = plt.subplots(figsize=FIGSIZE)
 ax.bar(methods, runtime, color=plt.get_cmap("tab10").colors[:len(methods)])
-ax.set_xlabel("pycasso version (illustrative)")
+ax.set_xlabel("matexxe version (illustrative)")
 ax.set_ylabel("relative restyle time")
 ax.set_title("Restyle runtime across releases")
 savefig(fig, "benchmark_runtime.pdf")
@@ -146,13 +146,13 @@ savefig(fig, "noise_field.pdf")
 
 # ---------------------------------------------------------------------------
 # 8. A plain PNG logo, reused from examples/images -- exercises the raster
-#    path (and is a fun thing to watch pycasso recolour in the paper itself)
+#    path (and is a fun thing to watch matexxe recolour in the paper itself)
 shutil.copy(JOLLY_LOGO, FIGURES / "jolly.png")
 
 print(f"wrote {len(list(FIGURES.iterdir()))} figure files -> {FIGURES}")
 
 # ---------------------------------------------------------------------------
-# main.tex -- a paper *about* pycasso, including two pycasso code snippets,
+# main.tex -- a paper *about* matexxe, including two matexxe code snippets,
 # a table of contents, and a "colour source" note (with a link) under every
 # figure. \definecolor entries and the listings style mirror a real paper's
 # setup (hyperlink colours, syntax-highlighted code using xcolor named
@@ -187,7 +187,7 @@ MAIN_TEX = r"""\documentclass[11pt]{article}
 }
 \lstset{style=pythonstyle}
 
-\title{A Toy Paper for \texttt{pycasso}}
+\title{A Toy Paper for \texttt{matexxe}}
 \author{An Example Author}
 \date{}
 
@@ -197,23 +197,23 @@ MAIN_TEX = r"""\documentclass[11pt]{article}
 \vspace{1em}
 
 \begin{abstract}
-This is a synthetic paper, generated only to demonstrate \texttt{pycasso}'s
+This is a synthetic paper, generated only to demonstrate \texttt{matexxe}'s
 project-wide restyling on a document with several figures, each plotted
 with a different, mismatched colour scheme -- the kind of inconsistency
 that accumulates naturally across a real paper's revision history, as
 different co-authors add figures with whatever colour scheme their own
 plotting habits default to. None of the numbers below mean anything; only
-the colours, and how \texttt{pycasso} reassigns them, do. Every figure's
+the colours, and how \texttt{matexxe} reassigns them, do. Every figure's
 caption names exactly which colour source it used, linked, so you can look
-it up and compare it against whatever \texttt{pycasso} decided to do with
+it up and compare it against whatever \texttt{matexxe} decided to do with
 it.
 \end{abstract}
 
 \section{Introduction}
-\texttt{pycasso} recolours the figures of a paper -- and, when given the
+\texttt{matexxe} recolours the figures of a paper -- and, when given the
 project's own \LaTeX{} source rather than just the compiled PDF, its
 hyperlink colours and code-listing syntax highlighting too -- onto a
-consistent palette (see \url{https://github.com/MatteoRobbiati/pycasso}).
+consistent palette (see \url{https://github.com/MatteoRobbiati/matexxe}).
 It decides how many independent colours a document really uses by
 clustering hues, then assigns each one a distinct replacement from the
 target palette whenever the palette has enough hue families to offer one.
@@ -225,7 +225,7 @@ continuous quantity.
 \section{Discrete, categorical figures}
 \label{sec:categorical}
 The four figures in this section each use a small number of distinct,
-named colours -- exactly the case \texttt{pycasso.fit()} is built around.
+named colours -- exactly the case \texttt{matexxe.fit()} is built around.
 Figure~\ref{fig:runtime} uses matplotlib's default qualitative cycle,
 \href{https://matplotlib.org/stable/users/prev_whats_new/dflt_style_changes.html#colors-in-default-property-cycle}{tab10}.
 Figure~\ref{fig:scatter} uses seaborn's
@@ -271,9 +271,9 @@ one figure at a time.
 \label{sec:continuous}
 Not every figure uses a handful of discrete colours. The three figures
 below use unrelated \emph{continuous} colormaps: a diverging one, and two
-sequential ones with entirely different hues. \texttt{pycasso} recognises
-this (see \texttt{pycasso.cluster.looks\_continuous}) and switches to
-\texttt{pycasso.fit\_colormap}, which finds each figure's own one or two
+sequential ones with entirely different hues. \texttt{matexxe} recognises
+this (see \texttt{matexxe.cluster.looks\_continuous}) and switches to
+\texttt{matexxe.fit\_colormap}, which finds each figure's own one or two
 dominant hues and blends continuously between their replacements, instead
 of snapping a smooth gradient onto a handful of discrete colours and
 introducing visible banding.
@@ -301,7 +301,7 @@ introducing visible banding.
 
 \clearpage
 \section{A raster logo}
-\texttt{pycasso} works on plain images too, not just figures inside a
+\texttt{matexxe} works on plain images too, not just figures inside a
 paper. Figure~\ref{fig:jolly} is a flat PNG, included here to exercise that
 same path from inside a full project restyle. Its own colours (a
 particular yellow and red) happen to already sit close to some palettes'
@@ -318,16 +318,16 @@ a palette with unrelated hues (e.g. \texttt{violet}) changes it clearly.
 \end{figure}
 
 \clearpage
-\section{Using pycasso}
+\section{Using matexxe}
 Restyling the compiled PDF alone reaches only what ended up embedded as a
 drawing object:
 
 \begin{lstlisting}
-import pycasso
+import matexxe
 
-palette = pycasso.Palette.load("okabe-ito")
-paper = pycasso.Painter("main.pdf")
-fitted = pycasso.fit(paper, palette)
+palette = matexxe.Palette.load("okabe-ito")
+paper = matexxe.Painter("main.pdf")
+fitted = matexxe.fit(paper, palette)
 paper.restyle(fitted, mode="hue")
 paper.save("main_restyled.pdf")
 \end{lstlisting}
@@ -336,16 +336,16 @@ Working from the project's own source, as this paper does, also reaches
 hyperlink colours and code-listing syntax highlighting:
 
 \begin{lstlisting}
-import pycasso
+import matexxe
 
-palette = pycasso.Palette.load("persian")
-project = pycasso.Project("toy_paper.zip")
-fitted = pycasso.fit(project, palette)
+palette = matexxe.Palette.load("persian")
+project = matexxe.Project("toy_paper.zip")
+fitted = matexxe.fit(project, palette)
 project.restyle(fitted, mode="hue")
 project.save("toy_paper_restyled.zip")
 \end{lstlisting}
 
-See \url{https://github.com/MatteoRobbiati/pycasso} for the full API.
+See \url{https://github.com/MatteoRobbiati/matexxe} for the full API.
 
 \section{Conclusion}
 This document exists only to be recoloured.
@@ -356,7 +356,7 @@ This document exists only to be recoloured.
 print(f"wrote {SOURCE / 'main.tex'}")
 
 # ---------------------------------------------------------------------------
-# pack into an Overleaf-style zip, exactly what pycasso.Project expects
+# pack into an Overleaf-style zip, exactly what matexxe.Project expects
 zip_path = HERE / "toy_paper.zip"
 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as archive:
     for file in sorted(SOURCE.rglob("*")):

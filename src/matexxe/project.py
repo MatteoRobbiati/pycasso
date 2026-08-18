@@ -27,9 +27,9 @@ from pathlib import Path
 
 import numpy as np
 
-from pycasso.cluster import hue_families
-from pycasso.color import parse, to_hex, to_lab
-from pycasso.workshop import Painter
+from matexxe.cluster import hue_families
+from matexxe.color import parse, to_hex, to_lab
+from matexxe.workshop import Painter
 
 log = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ class Project:
             self._workdir = self.path
             self._owns_workdir = False
         else:
-            self._workdir = Path(tempfile.mkdtemp(prefix="pycasso_project_"))
+            self._workdir = Path(tempfile.mkdtemp(prefix="matexxe_project_"))
             self._owns_workdir = True
             with zipfile.ZipFile(self.path) as archive:
                 for member in archive.namelist():
@@ -263,7 +263,7 @@ class Project:
     @property
     def figures(self):
         """
-        Every figure across every figure asset -- what :func:`~pycasso.fit.fit` sizes the palette from.
+        Every figure across every figure asset -- what :func:`~matexxe.fit.fit` sizes the palette from.
 
         Names are qualified with their owning asset (``"asset::figure"``).
         Two different single-page assets both name their own page figure
@@ -271,7 +271,7 @@ class Project:
         ``.figures`` is independently unique -- but collecting them across
         assets without qualifying first would silently conflate two
         unrelated figures that happen to share a name, corrupting
-        :attr:`~pycasso.fit.PaletteFit.skip`. :meth:`restyle` translates
+        :attr:`~matexxe.fit.PaletteFit.skip`. :meth:`restyle` translates
         the qualified names back before handing each asset its own figures.
         """
         found = []
@@ -297,11 +297,11 @@ class Project:
 
         Args:
             palette: the target palette (a plain
-                :class:`~pycasso.palette.Palette` or a
-                :class:`~pycasso.fit.PaletteFit`);
+                :class:`~matexxe.palette.Palette` or a
+                :class:`~matexxe.fit.PaletteFit`);
             mode, keep_greys, grey_tolerance: forwarded to each asset's
                 ``.restyle()`` -- see :meth:`Palette.map
-                <pycasso.palette.Palette.map>`. ``keep_greys`` also governs
+                <matexxe.palette.Palette.map>`. ``keep_greys`` also governs
                 ``\\definecolor``: a near-grey entry is almost always a
                 code-listing background or border, which should stay
                 whatever neutral colour the author chose rather than
@@ -312,15 +312,15 @@ class Project:
                 document colour used both in a figure and as, say, the
                 hyperlink colour ends up consistent;
             recolor_colormaps: recolour figures flagged as a continuous
-                colormap with :func:`~pycasso.cmap.fit_colormap` instead of
+                colormap with :func:`~matexxe.cmap.fit_colormap` instead of
                 leaving them untouched -- see
-                :meth:`~pycasso.paper.PdfPainter.restyle`.
+                :meth:`~matexxe.paper.PdfPainter.restyle`.
             recolor_code_styles: also rewrite ``keywordstyle``/``commentstyle``/
                 ``stringstyle``/``identifierstyle`` colour references --
                 see :data:`CODE_STYLE_KEYS`. Never touches
                 ``backgroundcolor``/``rulecolor``, regardless of this flag.
 
-        This only mutates each asset's in-memory :class:`~pycasso.workshop.Painter`
+        This only mutates each asset's in-memory :class:`~matexxe.workshop.Painter`
         -- call :meth:`save` afterwards to write the changes back to the
         extracted project and pack it into a new zip.
         """
@@ -429,7 +429,7 @@ class Project:
         Flush every figure asset to disk, then repack the project into a new zip.
 
         :meth:`restyle` only mutates each asset's in-memory
-        :class:`~pycasso.workshop.Painter` -- nothing reaches the extracted
+        :class:`~matexxe.workshop.Painter` -- nothing reaches the extracted
         project on disk until this writes each one back to its own file
         (``\\definecolor`` changes are the exception: those are written
         straight to ``main.tex`` as they happen, since there's no

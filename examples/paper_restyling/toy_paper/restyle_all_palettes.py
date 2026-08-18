@@ -19,9 +19,9 @@ Run from this directory.
 
 from pathlib import Path
 
-import pycasso
+import matexxe
 
-pycasso.enable_logging()
+matexxe.enable_logging()
 
 PROJECT_ZIP = "toy_paper.zip"
 OUTPUT_DIR = Path("restyled")
@@ -35,12 +35,12 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 for name in PALETTES:
     print(f"\n=== {name} ===")
-    palette = pycasso.Palette.load(name)
+    palette = matexxe.Palette.load(name)
 
     # a fresh Project each time: restyle() mutates in place, so reopening
     # keeps each palette's run independent of the last
-    project = pycasso.Project(PROJECT_ZIP)
-    fitted = pycasso.fit(project, palette)
+    project = matexxe.Project(PROJECT_ZIP)
+    fitted = matexxe.fit(project, palette)
     project.restyle(fitted, mode=MODE)
     project.save(OUTPUT_DIR / f"toy_paper_{name}_source.zip")
 

@@ -13,7 +13,7 @@ import logging
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from pycasso.color import is_achromatic, parse, to_lab
+from matexxe.color import is_achromatic, parse, to_lab
 
 log = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
 
     Args:
         counts: mapping of hex colour to pixel/operator weight, e.g. the
-            output of :meth:`~pycasso.workshop.Painter.colors`;
+            output of :meth:`~matexxe.workshop.Painter.colors`;
         merge_degrees: hue difference, in degrees, below which two colours
             are folded into the same cluster. Shades, tints and partially
             transparent blends of one series colour typically differ by a
@@ -240,7 +240,7 @@ def cluster_hues(counts, merge_degrees:float = DEFAULT_MERGE_DEGREES,
             where unrelated colours from different sources can easily
             happen to chain together across the hue wheel with no real
             relationship between them. Defaults to off for exactly that
-            reason; :func:`~pycasso.cmap.anchors` turns it on explicitly.
+            reason; :func:`~matexxe.cmap.anchors` turns it on explicitly.
 
     Returns:
         Clusters, heaviest first.
@@ -300,7 +300,7 @@ def consolidate_hues(clusters, merge_degrees:float):
     Merge clusters repeatedly while the closest pair is within ``merge_degrees``.
 
     Intended for a *single* genuinely continuous gradient (see
-    :func:`~pycasso.cmap.anchors`), where two clusters seeded from opposite
+    :func:`~matexxe.cmap.anchors`), where two clusters seeded from opposite
     ends of the same smooth ramp can end up within threshold of each
     other's centre without ever being compared during
     :func:`cluster_hues`'s single greedy pass -- which only ever checks a
@@ -366,9 +366,9 @@ def looks_continuous(counts, min_distinct:int = DEFAULT_CONTINUOUS_MIN_DISTINCT,
     distinct colours split close to evenly between two series (low
     concentration, but few colours) is still categorical, not continuous.
 
-    This only decides whether :func:`~pycasso.fit.fit` treats a figure as
+    This only decides whether :func:`~matexxe.fit.fit` treats a figure as
     fair game for automatic restyling -- it never affects
-    :meth:`~pycasso.workshop.Painter.colors`.
+    :meth:`~matexxe.workshop.Painter.colors`.
     """
     if len(counts) < min_distinct:
         return False

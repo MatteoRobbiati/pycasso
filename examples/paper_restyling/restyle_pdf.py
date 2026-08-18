@@ -1,13 +1,13 @@
 """
 Restyle every figure in a paper onto a standard colour palette.
 
-The approach (`pycasso.fit`):
+The approach (`matexxe.fit`):
 
   1. cluster each figure's own colours to find how many *independent*
      colours it uses -- shades, tints and partial transparency of one
      series colour count once. A figure that looks like a continuous
      colormap (a heatmap, a density plot) rather than a handful of series
-     colours is left untouched entirely -- see pycasso.cluster.looks_continuous;
+     colours is left untouched entirely -- see matexxe.cluster.looks_continuous;
   2. cluster the whole document's colours together in one pass, so the same
      real-world series colour is recognised consistently across figures,
      not independently per figure;
@@ -24,8 +24,8 @@ palette.
 
 A figure `fit()` recognises as a continuous colormap (a heatmap, a
 colourbar) is not simply left untouched: discrete cluster-and-snap is the
-wrong tool for a continuous quantity (see pycasso.cluster.looks_continuous),
-so `restyle()` recolours it separately, via `pycasso.fit_colormap()`. That
+wrong tool for a continuous quantity (see matexxe.cluster.looks_continuous),
+so `restyle()` recolours it separately, via `matexxe.fit_colormap()`. That
 finds the figure's own dominant hue anchors (two, for a diverging blue/red
 map) and blends *continuously* between their replacements -- no banding, no
 discrete jumps -- reusing `fitted`'s own assigned colours as those anchors'
@@ -43,20 +43,20 @@ point it at any other compiled PDF to try this on a paper of your own.
 
 from pathlib import Path
 
-import pycasso
+import matexxe
 
-# print pycasso's progress to the terminal; comment out for silence
-pycasso.enable_logging()
+# print matexxe's progress to the terminal; comment out for silence
+matexxe.enable_logging()
 
 PDF_IN = "toy_paper/main.pdf"
 PDF_OUT = "toy_paper/main_restyled.pdf"
-PALETTE_NAME = "chalmers"      # pycasso.available() lists the built-ins
+PALETTE_NAME = "chalmers"      # matexxe.available() lists the built-ins
 MODE = "hue"                    # "snap" | "tint" | "hue" -- see Palette.map
 
-paper = pycasso.Painter(PDF_IN)
-palette = pycasso.Palette.load(PALETTE_NAME)
+paper = matexxe.Painter(PDF_IN)
+palette = matexxe.Palette.load(PALETTE_NAME)
 
-fitted = pycasso.fit(paper, palette)
+fitted = matexxe.fit(paper, palette)
 paper.restyle(fitted, mode=MODE)   # also recolours continuous colormaps, see above
 paper.save(PDF_OUT)
 

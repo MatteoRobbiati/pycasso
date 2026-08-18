@@ -3,7 +3,7 @@ The painter: anything whose colours can be inspected and changed.
 
 ``Painter(path)`` picks an implementation from the file extension, so a bitmap
 and a paper are opened the same way and answer the same methods. Backends
-register themselves with :func:`backend`, and ``pycasso.paper`` adds PDF
+register themselves with :func:`backend`, and ``matexxe.paper`` adds PDF
 support on import.
 """
 
@@ -14,8 +14,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from pycasso.cmap import fit_colormap
-from pycasso.color import to_hex
+from matexxe.cmap import fit_colormap
+from matexxe.color import to_hex
 
 log = logging.getLogger(__name__)
 
@@ -204,17 +204,17 @@ class ImagePainter(Painter):
         Snap every visible pixel onto ``palette``.
 
         Args:
-            palette: the target :class:`~pycasso.palette.Palette`;
+            palette: the target :class:`~matexxe.palette.Palette`;
             mode: how much of the original colour to keep -- see
-                :meth:`Palette.map <pycasso.palette.Palette.map>`;
+                :meth:`Palette.map <matexxe.palette.Palette.map>`;
             keep_greys: leave achromatic pixels alone, so axes and text keep
                 their neutral tone;
             grey_tolerance: how close to grey a colour must be to count;
             min_alpha: pixels less opaque than this are left untouched;
             recolor_colormaps: if ``palette`` flagged this whole image as a
                 continuous colormap (see ``.skip``, set by
-                :func:`~pycasso.fit.fit`), recolour it separately with
-                :func:`~pycasso.cmap.fit_colormap` instead of leaving it
+                :func:`~matexxe.fit.fit`), recolour it separately with
+                :func:`~matexxe.cmap.fit_colormap` instead of leaving it
                 untouched. That reuses ``palette``'s own assigned colours as
                 the colormap's anchors, so it ends up built from the same
                 colours the rest of the document settled on.
@@ -229,7 +229,7 @@ class ImagePainter(Painter):
                     log.info("%s: recolouring as a continuous colormap", self.name)
                     return self.restyle(colormap_fit, mode=mode, keep_greys=keep_greys,
                                          grey_tolerance=grey_tolerance, min_alpha=min_alpha)
-            log.info("%s: skipped (flagged by pycasso.fit())", self.name)
+            log.info("%s: skipped (flagged by matexxe.fit())", self.name)
             self.changes = Counter()
             return self
 
