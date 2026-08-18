@@ -62,24 +62,28 @@ import matexxe
 
 icon = matexxe.Painter("icon.png")
 
-# make a colour transparent instead of replacing it with another one,
-# shadow_range also catches antialiased pixels that are a slightly
-# different shade of the same colour, not an exact match
-icon.remove_color(color=(143, 163, 220), shadow_range=30)
+# swap one exact colour for another
+icon.replace_colors(old_color=(143, 163, 220), new_color=(230, 81, 0), alpha=None)
+icon.save("icon_recoloured.png")
 
-icon.save("icon_edited.png")
+# or make a colour transparent instead, shadow_range also catches
+# antialiased pixels that are a slightly different shade of the same
+# colour, not an exact match
+icon = matexxe.Painter("icon.png")
+icon.remove_color(color=(143, 163, 220), shadow_range=30)
+icon.save("icon_transparent.png")
 ```
 
 <table>
-<tr><th>before</th><th>after</th></tr>
+<tr><th>before</th><th>replace_colors</th><th>remove_color</th></tr>
 <tr>
-<td><img src="docs/public/matexxe-icon-512.png" width="180" alt="icon with a flat blue background"></td>
-<td><img src="docs/public/matexxe-icon-512-transparent.png" width="180" alt="the same icon with the background removed"></td>
+<td><img src="docs/public/matexxe-icon-512.png" width="160" alt="icon with a flat blue background"></td>
+<td><img src="docs/public/matexxe-icon-512-recolored.png" width="160" alt="the same icon with the background swapped for orange"></td>
+<td><img src="docs/public/matexxe-icon-512-transparent.png" width="160" alt="the same icon with the background removed"></td>
 </tr>
 </table>
 
-`replace_colors` works the same way for a straight colour swap instead of a
-removal, see [examples/basic_recolor/recolor_logo.py](examples/basic_recolor/recolor_logo.py)
+See [examples/basic_recolor/recolor_logo.py](examples/basic_recolor/recolor_logo.py)
 for both, run against this exact icon.
 
 For anything bigger than "I know the one colour to change", `matexxe.fit()`
@@ -98,6 +102,19 @@ painter.restyle(fitted, mode="hue")
 painter.save("logo_restyled.png")
 ```
 
+<table>
+<tr><th>before</th><th>okabe-ito</th><th>green-orange</th></tr>
+<tr>
+<td><img src="docs/public/jolly.png" width="160" alt="a jolly roger flag in its original yellow and red"></td>
+<td><img src="docs/public/jolly_okabe-ito.png" width="160" alt="the same flag restyled with the okabe-ito palette"></td>
+<td><img src="docs/public/jolly_green-orange.png" width="160" alt="the same flag restyled with the green-orange palette"></td>
+</tr>
+</table>
+
+Same call both times, only the palette changed, see
+[examples/basic_recolor/recolor_logo.py](examples/basic_recolor/recolor_logo.py)
+for the full script.
+
 ```python
 # a whole paper's Overleaf source (a "Source" download, or an already
 # extracted project directory), not just the compiled PDF, but every
@@ -109,7 +126,7 @@ project.save("paper_restyled.zip")   # re-upload to Overleaf and recompile,
                                       # or project.compile(...) locally
 ```
 
-See [examples/](examples/) for complete, runnable versions of both, plus a
+See [examples/](examples/) for a complete, runnable version, plus a
 synthetic "toy paper" restyled through several different palettes.
 
 ## How `fit()` decides what to do
